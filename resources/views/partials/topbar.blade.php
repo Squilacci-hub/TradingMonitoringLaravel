@@ -22,8 +22,8 @@
         <div class="user-profile-pill">
             <div class="user-avatar"></div>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
-                <span style="font-size: 12px; font-weight: 600;">Alex Trader</span>
-                <span style="font-size: 10px; color: var(--accent-emerald);">PRO Account</span>
+                <span style="font-size: 12px; font-weight: 600;">{{ Auth::user()->name }}</span>
+                <span style="font-size: 10px; color: var(--accent-emerald);">TRADER</span>
             </div>
             <i class="fa-solid fa-caret-down" style="font-size: 10px; margin-left: 4px; opacity: 0.5;"></i>
         </div>

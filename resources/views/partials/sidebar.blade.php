@@ -38,4 +38,13 @@
         <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>
         <span class="nav-label">Settings</span>
     </a>
+
+    <!-- Logout -->
+    <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+        @csrf
+        <button type="submit" class="nav-item" style="background: none; border: none; cursor: pointer; color: inherit; font-family: inherit; width: 100%; text-align: left;">
+            <div class="nav-icon"><i class="fa-solid fa-right-from-bracket" style="color: var(--accent-crimson);"></i></div>
+            <span class="nav-label" style="color: var(--accent-crimson);">Logout</span>
+        </button>
+    </form>
 </nav>
