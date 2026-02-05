@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap');
+
+:root {
+    --bg-app: #0b0e14;
+    --bg-panel: #151924;
+    --bg-panel-hover: #1e2330;
+    --sidebar-bg: rgba(21, 25, 36, 0.95);
+
+    --border-color: #2a2e39;
+    --border-highlight: #363a45;
+
+    --text-primary: #e1e3eb;
+    --text-secondary: #848a9a;
+    --text-accent: #ffffff;
+
+    --accent-emerald: #00faac;
+    --accent-crimson: #ff4a5c;
+    --accent-blue: #2979ff;
+    --accent-glow: rgba(41, 121, 255, 0.5);
+
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+}

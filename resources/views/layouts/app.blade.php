@@ -13,58 +13,17 @@
     
     <!-- App Scripts & Styles -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <div class="app-container">
         <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="brand-icon">
-                <i class="fa-solid fa-layer-group"></i>
-            </div>
-            
-            <a href="{{ url('/') }}" class="nav-item {{ Request::is('/') ? 'active' : '' }}">
-                <div class="nav-icon"><i class="fa-solid fa-chart-line"></i></div>
-                <span class="nav-label">Dashboard</span>
-            </a>
-            
-            <a href="{{ url('/journal') }}" class="nav-item {{ Request::is('journal') ? 'active' : '' }}">
-                <div class="nav-icon"><i class="fa-solid fa-book"></i></div>
-                <span class="nav-label">Journal</span>
-            </a>
-            
-            <a href="{{ url('/strategies') }}" class="nav-item {{ Request::is('strategies') ? 'active' : '' }}">
-                <div class="nav-icon"><i class="fa-solid fa-chess-knight"></i></div>
-                <span class="nav-label">Strategies</span>
-            </a>
-            
-            <a href="#" class="nav-item">
-                <div class="nav-icon"><i class="fa-solid fa-calendar"></i></div>
-                <span class="nav-label">Calendar</span>
-            </a>
-            
-            <a href="#" class="nav-item" style="margin-top: auto;">
-                <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>
-                <span class="nav-label">Settings</span>
-            </a>
-        </nav>
+        @include('partials.sidebar')
 
         <!-- Main Workspace -->
         <div class="main-wrapper">
             <!-- Top Header -->
-            <header class="topbar">
-                <div class="breadcrumbs">
-                    <i class="fa-solid fa-house" style="margin-right: 8px;"></i>
-                    <span>App</span>
-                    <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
-                    <span class="current">@yield('title', 'Page')</span>
-                </div>
-                
-                <div class="user-menu">
-                    <button class="btn-icon"><i class="fa-regular fa-bell"></i></button>
-                    <div style="width: 32px; height: 32px; background: #2a2e39; border-radius: 50%;"></div>
-                </div>
-            </header>
+            @include('partials.topbar')
 
             <!-- Dynamic Content -->
             <main class="content-area">

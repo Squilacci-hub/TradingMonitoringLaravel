@@ -23,19 +23,57 @@
         </div>
     </div>
 
-    <!-- Main Chart Section -->
-    <div class="panel">
-        <div class="panel-header">
-            <span>Equity Curve</span>
-            <div style="display: flex; gap: 8px;">
-                <button class="badge" style="background: var(--bg-app); color: var(--text-secondary); border: none;">1M</button>
-                <button class="badge" style="background: var(--accent-blue); color: white; border: none;">YTD</button>
+    <!-- Charts Section (Dense Grid) -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+        
+        <!-- Main: Equity Curve -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>Equity Curve</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="badge" style="background: var(--bg-app); color: var(--text-secondary); border: none;">1M</button>
+                    <button class="badge" style="background: var(--accent-blue); color: white; border: none;">YTD</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="chart-container" style="height: 320px;">
+                    <canvas id="equityChart"></canvas>
+                </div>
             </div>
         </div>
-        <div class="panel-body">
-            <div class="chart-container">
-                <canvas id="equityChart"></canvas>
+
+        <!-- Sidebar Charts Column -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            
+            <!-- Win/Loss Ratio -->
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">
+                    <span>Win / Loss Ratio</span>
+                </div>
+                <div class="panel-body" style="display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div class="chart-container" style="height: 140px; width: 140px;">
+                        <canvas id="winLossChart"></canvas>
+                    </div>
+                    <!-- Center stats overlay -->
+                    <div style="position: absolute; text-align: center;">
+                        <span style="font-size: 10px; color: var(--text-secondary); display: block;">High</span>
+                        <span class="font-mono" style="font-weight: 700; color: var(--text-primary);">68%</span>
+                    </div>
+                </div>
             </div>
+
+            <!-- Asset Allocation -->
+            <div class="panel" style="flex: 1;">
+                <div class="panel-header">
+                    <span>Volume Distribution</span>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-container" style="height: 140px;">
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 
@@ -101,12 +139,18 @@
 
 @section('scripts')
 <script>
-    const ctx = document.getElementById('equityChart').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    // Common Config
+    Chart.defaults.font.family = 'Inter';
+    Chart.defaults.color = '#787b86';
+    Chart.defaults.borderColor = '#2a2e39';
+
+    // 1. Equity Chart
+    const ctxEquity = document.getElementById('equityChart').getContext('2d');
+    const gradient = ctxEquity.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(0, 189, 157, 0.2)');
     gradient.addColorStop(1, 'rgba(0, 189, 157, 0)');
 
-    new Chart(ctx, {
+    new Chart(ctxEquity, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
@@ -125,31 +169,56 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#1e222d',
-                    titleColor: '#d1d4dc',
-                    bodyColor: '#d1d4dc',
-                    borderColor: '#2a2e39',
-                    borderWidth: 1,
-                    displayColors: false,
-                    padding: 10
-                }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#787b86', font: { family: 'Inter' } }
-                },
-                y: {
-                    grid: { color: '#2a2e39' },
-                    ticks: { color: '#787b86', font: { family: 'Roboto Mono' } }
-                }
+                x: { grid: { display: false }, ticks: { maxTicksLimit: 6 } },
+                y: { grid: { color: '#2a2e39' } }
+            }
+        }
+    });
+
+    // 2. Win/Loss Doughnut
+    const ctxWinLoss = document.getElementById('winLossChart').getContext('2d');
+    new Chart(ctxWinLoss, {
+        type: 'doughnut',
+        data: {
+            labels: ['Wins', 'Losses'],
+            datasets: [{
+                data: [68, 32],
+                backgroundColor: ['#00bd9d', '#f23645'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // 3. Volume Distribution (Bar)
+    const ctxVolume = document.getElementById('volumeChart').getContext('2d');
+    new Chart(ctxVolume, {
+        type: 'bar',
+        data: {
+            labels: ['EUR', 'GBP', 'XAU', 'NAS', 'BTC'],
+            datasets: [{
+                label: 'Volume',
+                data: [45, 30, 60, 25, 15],
+                backgroundColor: '#2962ff',
+                borderRadius: 2,
+                barThickness: 12
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { display: false }
             }
         }
     });

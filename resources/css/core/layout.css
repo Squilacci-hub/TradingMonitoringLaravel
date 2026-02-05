@@ -1,0 +1,316 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-app);
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    background-image: radial-gradient(circle at top right, rgba(41, 121, 255, 0.05), transparent 40%);
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* SIDEBAR STYLES */
+.sidebar {
+    width: 70px;
+    background: linear-gradient(180deg, rgba(21, 25, 36, 0.9) 0%, rgba(15, 18, 26, 0.95) 100%);
+    backdrop-filter: blur(12px);
+    border-right: var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar:hover {
+    width: 260px;
+    align-items: flex-start;
+    padding-left: 0;
+}
+
+.brand-wrapper {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 40px;
+    position: relative;
+    padding-left: 0;
+    transition: all 0.3s;
+}
+
+.sidebar:hover .brand-wrapper {
+    justify-content: flex-start;
+    padding-left: 24px;
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent-blue), #1a237e);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 0 15px var(--accent-glow);
+    flex-shrink: 0;
+}
+
+.brand-text {
+    margin-left: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+    display: none;
+    opacity: 0;
+    white-space: nowrap;
+}
+
+.sidebar:hover .brand-text {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s forwards 0.1s;
+}
+
+.brand-sub {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.nav-item {
+    width: 100%;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 23px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar:hover .nav-item {
+    padding-left: 21px;
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+}
+
+.nav-item.active {
+    color: white;
+    background: linear-gradient(90deg, rgba(41, 121, 255, 0.15) 0%, transparent 100%);
+    border-left-color: var(--accent-blue);
+    text-shadow: 0 0 10px rgba(41, 121, 255, 0.5);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-blue);
+    box-shadow: 0 0 12px var(--accent-blue);
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
+}
+
+.nav-label {
+    margin-left: 18px;
+    display: none;
+    opacity: 0;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.sidebar:hover .nav-label {
+    display: block;
+    animation: slideIn 0.3s forwards;
+}
+
+/* MAIN WRAPPER */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(ellipse at top center, rgba(30, 35, 48, 0.4) 0%, transparent 70%);
+}
+
+/* TOPBAR STYLES */
+.topbar {
+    height: 64px;
+    border-bottom: var(--glass-border);
+    background-color: rgba(19, 23, 34, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.breadcrumbs {
+    color: var(--text-secondary);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Should be inherited but defining it here just in case */
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 16px;
+    width: 300px;
+    margin-left: 24px;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+    border-color: var(--accent-blue);
+    width: 350px;
+    box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.1);
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    margin-left: 10px;
+    width: 100%;
+    outline: none;
+    font-family: var(--font-ui);
+    font-size: 13px;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: linear-gradient(180deg, #1f2430 0%, #171b25 100%);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.user-profile-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-profile-pill:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-secondary);
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border: 2px solid #131722;
+}
+
+/* CONTENT AREA */
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
