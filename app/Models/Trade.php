@@ -11,6 +11,11 @@ class Trade extends Model
 
     protected $fillable = [
         'user_id',
+        'trading_account_id',
+        'ticket',
+        'emotion_id',
+        'pattern_id',
+        'pair_id',
         'symbol',
         'type',
         'volume',
@@ -22,6 +27,8 @@ class Trade extends Model
         'commission',
         'swap',
         'status',
+        'timeframe',
+        'risk_percentage',
         'notes',
         'screenshot'
     ];
@@ -34,6 +41,7 @@ class Trade extends Model
         'close_time' => 'datetime',
         'volume' => 'decimal:2',
         'profit' => 'decimal:2',
+        'risk_percentage' => 'decimal:2',
     ];
 
     /**
@@ -42,5 +50,25 @@ class Trade extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tradingAccount()
+    {
+        return $this->belongsTo(TradingAccount::class);
+    }
+
+    public function emotion()
+    {
+        return $this->belongsTo(Emotion::class);
+    }
+
+    public function pattern()
+    {
+        return $this->belongsTo(Pattern::class);
+    }
+
+    public function pair()
+    {
+        return $this->belongsTo(Pair::class);
     }
 }

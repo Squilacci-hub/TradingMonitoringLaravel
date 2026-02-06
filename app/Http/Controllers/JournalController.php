@@ -11,9 +11,15 @@ class JournalController extends Controller
     {
         $user = Auth::user();
 
-        // Récupérer tous les trades paginés (20 par page)
-        // Triés par date d'ouverture déscendante
-        $trades = $user->trades()->orderBy('open_time', 'desc')->paginate(20);
+        $accountId = session('active_account_id') ?? $user->tradingAccounts()->first()?->id;
+        $account = $accountId ? $user->tradingAccounts()->find($accountId) : null;
+
+        if (!$account) {
+            return redirect()->route('dashboard');
+        }
+
+        // Récupérer les trades du compte actif paginés
+        $trades = $account->trades()->orderBy('open_time', 'desc')->paginate(20);
 
         return view('journal', [
             'trades' => $trades

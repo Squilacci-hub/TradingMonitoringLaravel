@@ -11,11 +11,20 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Récupérer les trades fermés pour les stats
-        $closedTrades = $user->trades()->where('status', 'CLOSED')->get();
+        // Gérer le compte actif
+        $accountId = session('active_account_id') ?? $user->tradingAccounts()->first()?->id;
+        $account = $accountId ? $user->tradingAccounts()->find($accountId) : null;
 
-        // 1. Calcul Balance (Supposons dépôt initial fictif ou calculé)
-        // Pour l'exemple, on part de 100,000 et on ajoute les profits
+        if (!$account) {
+            // Créer un compte par défaut si aucun n'existe
+            $account = $user->tradingAccounts()->create(['name' => 'Compte Principal']);
+            session(['active_account_id' => $account->id]);
+        }
+
+        // Récupérer les trades du compte actif uniquement pour les stats
+        $closedTrades = $account->trades()->where('status', 'CLOSED')->get();
+
+        // 1. Calcul Balance (Supposons dépôt initial fictif)
         $initialBalance = 100000;
         $totalProfit = $closedTrades->sum('profit');
         $currentBalance = $initialBalance + $totalProfit;
@@ -30,10 +39,11 @@ class DashboardController extends Controller
         $grossLoss = abs($closedTrades->where('profit', '<', 0)->sum('profit'));
         $profitFactor = $grossLoss > 0 ? $grossProfit / $grossLoss : 0;
 
-        // 4. Derniers trades (pour la liste)
-        $recentTrades = $user->trades()->latest('open_time')->take(5)->get();
+        // 4. Derniers trades (pour la liste) du compte actif
+        $recentTrades = $account->trades()->latest('open_time')->take(5)->get();
 
         return view('dashboard', [
+            'account_name' => $account->name,
             'balance' => $currentBalance,
             'net_pl' => $totalProfit,
             'win_rate' => $winRate,

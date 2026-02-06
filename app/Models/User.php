@@ -55,4 +55,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Trade::class);
     }
+
+    /**
+     * Relation : Un utilisateur a plusieurs comptes de trading.
+     */
+    public function tradingAccounts()
+    {
+        return $this->hasMany(TradingAccount::class);
+    }
 }
