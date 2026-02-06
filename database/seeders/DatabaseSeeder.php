@@ -3,23 +3,33 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Trade;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Trouver ou Créer l'utilisateur spécifique
+        $user = User::firstOrCreate(
+            ['email' => 'mamisoasheena@gmail.com'],
+            [
+                'name' => 'Sheena',
+                'password' => Hash::make('sheena123'), // Mot de passe par défaut pour le test
+                'id' => 2 // On force l'ID 1 si possible (attention si déjà pris)
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // 2. Générer 50 Trades pour cet utilisateur
+        Trade::factory()
+            ->count(50)
+            ->for($user)
+            ->create();
+
+        $this->command->info("50 Trades générés pour {$user->email} !");
     }
 }

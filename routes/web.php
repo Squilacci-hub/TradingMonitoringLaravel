@@ -4,14 +4,16 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    // Provisoire : Rediriger vers login si non connecté
-    return auth()->check() ? view('dashboard') : redirect()->route('login');
-})->name('dashboard'); // Ajout du name pour redirection facile
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JournalController;
 
-Route::get('/journal', function () {
-    return view('journal');
-});
+Route::get('/', [DashboardController::class, 'index'])
+    ->middleware('auth') // Sécurité : connecté seulement
+    ->name('dashboard');
+
+Route::get('/journal', [JournalController::class, 'index'])
+    ->middleware('auth')
+    ->name('journal');
 
 Route::get('/strategies', function () {
     return view('strategies');
