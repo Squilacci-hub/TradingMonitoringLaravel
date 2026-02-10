@@ -19,14 +19,14 @@
                     @endphp
 
                     <!-- Info Compte (Pleine largeur) -->
-                    <div style="grid-column: span 3; background: rgba(0, 189, 157, 0.05); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(0, 189, 157, 0.2); margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <!-- <div style="grid-column: span 3; background: rgba(0, 189, 157, 0.05); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(0, 189, 157, 0.2); margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span style="font-size: 11px; color: var(--text-secondary);">Enregistrement sur le compte : </span>
                             <span style="font-size: 12px; font-weight: 600; color: var(--accent-emerald);">{{ $activeAccount->name }}</span>
                         </div>
                         <input type="hidden" name="trading_account_id" value="{{ $activeAccount->id }}">
                         <span style="font-size: 10px; color: var(--text-secondary); opacity: 0.7;">SESSION_ID: {{ session()->getId() }}</span>
-                    </div>
+                    </div> -->
 
                     <!-- LIGNE 1 : Symbole, Action, Timeframe -->
                     <div class="form-group">

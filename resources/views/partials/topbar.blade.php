@@ -51,10 +51,6 @@
                         {{ $account->name }}
                     </a>
                 @endforeach
-                <a href="{{ route('accounts.connect') }}"
-                    style="display: block; padding: 10px; color: var(--accent-emerald); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <i class="fa-solid fa-link" style="margin-right: 8px;"></i> Associer un compte (MT4/MT5)
-                </a>
                 <a href="{{ route('accounts.create') }}"
                     style="display: block; padding: 10px; color: var(--accent-blue); text-decoration: none; font-size: 12px;">
                     <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Créer un compte manuel

@@ -58,6 +58,6 @@ class TradeController extends Controller
 
         $trade->save();
 
-        return redirect()->route('journal')->with('success', 'Trade ajouté avec succès !');
+        return redirect()->route('trades.create')->with('success', 'Trade ajouté avec succès !');
     }
 }

@@ -33,10 +33,6 @@ Route::get('/accounts/create', function () {
     return view('accounts.create');
 })->middleware('auth')->name('accounts.create');
 
-Route::get('/accounts/connect', function () {
-    return view('accounts.connect');
-})->middleware('auth')->name('accounts.connect');
-
 Route::post('/accounts', [AccountController::class, 'store'])
     ->middleware('auth')
     ->name('accounts.store');
