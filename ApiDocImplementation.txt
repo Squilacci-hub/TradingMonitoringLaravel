@@ -1,0 +1,319 @@
+//////================================================================================
+ARCHITECTURE APPLICATION TRADING - EXNESS
+================================================================================
+
+📋 DESCRIPTION DU PROJET
+-------------------------
+Application Laravel simple qui :
+1. Demande les credentials de connexion au broker Exness
+2. Vérifie si le compte existe
+3. Affiche tous les trades du compte
+
+================================================================================
+STRUCTURE DES FICHIERS
+================================================================================
+
+trading-app/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.php          # Gestion de la connexion broker
+│   │   │   └── TradeController.php         # Affichage des trades
+│   │   │
+│   │   └── Requests/
+│   │       └── BrokerLoginRequest.php      # Validation des inputs
+│   │
+│   ├── Models/
+│   │   ├── BrokerAccount.php               # Modèle pour les comptes broker
+│   │   └── Trade.php                       # Modèle pour les trades
+│   │
+│   └── Services/
+│       └── ExnessApiService.php            # Service pour appeler l'API Exness
+│
+├── database/
+│   └── migrations/
+│       ├── create_broker_accounts_table.php
+│       └── create_trades_table.php
+│
+├── resources/
+│   └── views/
+│       ├── login.blade.php                 # Page de connexion
+│       ├── dashboard.blade.php             # Page des trades
+│       └── layouts/
+│           └── app.blade.php               # Layout principal
+│
+└── routes/
+    └── web.php                             # Routes de l'application
+
+
+================================================================================
+BASE DE DONNÉES
+================================================================================
+
+TABLE: broker_accounts
+----------------------
+id                  BIGINT (PK)
+server              VARCHAR(255)        # Ex: Exness-MT5Real3
+login               VARCHAR(255)        # Numéro de compte
+password_encrypted  TEXT                # Mot de passe crypté
+account_type        ENUM('demo','real')
+is_active          BOOLEAN
+last_sync          TIMESTAMP
+created_at         TIMESTAMP
+updated_at         TIMESTAMP
+
+
+TABLE: trades
+-------------
+id                 BIGINT (PK)
+broker_account_id  BIGINT (FK)
+ticket             VARCHAR(255)        # Numéro du trade
+symbol             VARCHAR(20)         # Ex: EURUSD, GBPUSD
+type               ENUM('buy','sell')
+volume             DECIMAL(10,2)       # Lots
+open_price         DECIMAL(10,5)
+open_time          DATETIME
+close_price        DECIMAL(10,5)
+close_time         DATETIME
+profit             DECIMAL(10,2)
+commission         DECIMAL(10,2)
+swap               DECIMAL(10,2)
+status             ENUM('open','closed')
+created_at         TIMESTAMP
+updated_at         TIMESTAMP
+
+
+================================================================================
+FLUX DE L'APPLICATION
+================================================================================
+
+1. PAGE DE CONNEXION (login.blade.php)
+   └─> Formulaire avec 3 champs :
+       - Serveur (select: Exness-MT5Demo, Exness-MT5Real, etc.)
+       - Login (input number)
+       - Password (input password)
+       - Bouton "Se connecter"
+
+2. SOUMISSION DU FORMULAIRE
+   └─> POST /broker/login
+       └─> AuthController@login
+           ├─> Validation des données (BrokerLoginRequest)
+           ├─> Appel ExnessApiService->verifyAccount()
+           │   ├─> Si TRUE : Compte existe
+           │   │   ├─> Sauvegarde dans broker_accounts
+           │   │   ├─> Récupération des trades via API
+           │   │   ├─> Sauvegarde dans table trades
+           │   │   └─> Redirect vers /dashboard
+           │   │
+           │   └─> Si FALSE : Compte n'existe pas
+           │       └─> Retour avec message d'erreur
+           │
+           └─> Session : stock broker_account_id
+
+3. PAGE DASHBOARD (dashboard.blade.php)
+   └─> Affichage des informations :
+       ├─> Info du compte (balance, equity, margin)
+       └─> Tableau des trades :
+           ├─> Ticket
+           ├─> Symbol
+           ├─> Type (Buy/Sell)
+           ├─> Volume
+           ├─> Open Price/Time
+           ├─> Close Price/Time
+           ├─> Profit
+           └─> Status
+
+
+================================================================================
+ROUTES (web.php)
+================================================================================
+
+Route::get('/', function () {
+    return view('login');
+})->name('home');
+
+Route::post('/broker/login', [AuthController::class, 'login'])
+    ->name('broker.login');
+
+Route::get('/dashboard', [TradeController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('broker.auth');
+
+Route::post('/broker/logout', [AuthController::class, 'logout'])
+    ->name('broker.logout');
+
+Route::post('/trades/sync', [TradeController::class, 'sync'])
+    ->name('trades.sync');
+
+
+================================================================================
+CONTROLLERS
+================================================================================
+
+AuthController.php
+------------------
+- login()           : Vérifie credentials et connecte au broker
+- logout()          : Déconnexion
+- verifyCredentials() : Appelle l'API pour vérifier
+
+
+TradeController.php
+-------------------
+- index()           : Affiche tous les trades du compte
+- sync()            : Synchronise les trades depuis l'API
+- show($id)         : Détails d'un trade
+
+
+================================================================================
+SERVICE API (ExnessApiService.php)
+================================================================================
+
+Méthodes principales :
+----------------------
+- verifyAccount($server, $login, $password) : bool
+  └─> Teste la connexion au broker
+  └─> Retourne true si compte existe, false sinon
+
+- getAccountInfo($accountId) : array
+  └─> Récupère balance, equity, margin, etc.
+
+- getTrades($accountId) : array
+  └─> Récupère tous les trades (ouverts + fermés)
+
+- getTradeDetails($ticketId) : array
+  └─> Détails d'un trade spécifique
+
+
+Configuration API :
+-------------------
+Fichier .env :
+EXNESS_API_URL=https://api.exness.com/v1
+EXNESS_API_KEY=your_api_key (si nécessaire)
+
+
+================================================================================
+SÉCURITÉ
+================================================================================
+
+✓ Cryptage du mot de passe avant stockage (Hash::make())
+✓ CSRF protection sur tous les formulaires
+✓ Validation stricte des inputs (BrokerLoginRequest)
+✓ Middleware pour protéger /dashboard
+✓ Rate limiting sur la route /broker/login
+✓ Ne jamais afficher le mot de passe en clair
+
+
+================================================================================
+PACKAGES LARAVEL UTILES
+================================================================================
+
+composer require guzzlehttp/guzzle          # Pour les appels HTTP/API
+composer require laravel/breeze             # Authentification simple (optionnel)
+
+
+================================================================================
+ÉTAPES DE DÉVELOPPEMENT
+================================================================================
+
+PHASE 1 : Setup
+---------------
+□ Installer Laravel
+□ Configurer la base de données
+□ Créer les migrations
+□ Créer les modèles
+
+PHASE 2 : API Integration
+--------------------------
+□ Créer ExnessApiService
+□ Tester connexion API Exness
+□ Implémenter verifyAccount()
+□ Implémenter getTrades()
+
+PHASE 3 : Interface
+-------------------
+□ Créer page login
+□ Créer AuthController
+□ Créer page dashboard
+□ Créer TradeController
+
+PHASE 4 : Fonctionnalités
+-------------------------
+□ Sauvegarde des trades en DB
+□ Système de synchronisation
+□ Affichage des statistiques basiques
+□ Gestion des erreurs
+
+PHASE 5 : Améliorations
+-----------------------
+□ Graphiques des performances
+□ Filtres sur les trades
+□ Export CSV/Excel
+□ Notifications
+
+
+================================================================================
+NOTES IMPORTANTES
+================================================================================
+
+⚠ API EXNESS :
+- Vérifier la documentation officielle Exness pour l'API
+- Certains brokers utilisent MetaTrader API (MT4/MT5)
+- Possibilité d'utiliser MetaApi.cloud comme intermédiaire
+
+⚠ ALTERNATIVES SI PAS D'API DIRECTE :
+- MetaApi (https://metaapi.cloud) - API pour MT4/MT5
+- FIX API si disponible
+- WebSocket pour données en temps réel
+
+⚠ DONNÉES TEMPS RÉEL :
+- Pour l'instant : affichage des trades historiques
+- Pour temps réel : implémenter WebSocket ou polling
+
+
+================================================================================
+EXEMPLE DE FLOW UTILISATEUR
+================================================================================
+
+1. User visite http://trading-app.local
+2. Voit formulaire de connexion
+3. Entre :
+   - Serveur : Exness-MT5Demo
+   - Login : 12345678
+   - Password : ********
+4. Clique "Se connecter"
+5. App vérifie via ExnessApiService
+   ├─> Si valide : Récupère trades + redirect dashboard
+   └─> Si invalide : Message "Identifiants incorrects"
+6. Dashboard affiche :
+   - Solde du compte
+   - Liste de tous les trades
+   - Possibilité de synchroniser
+
+
+================================================================================
+FIN DE L'ARCHITECTURE
+================================================================================
+
+
+logique de combinaison de languqge:
+positions = mt5.positions_get()
+```
+
+---
+
+## 🔗 Comment ça marche avec votre projet Laravel ?
+```
+Votre Laravel App
+    ↓
+Appelle un script Python
+    ↓
+Python utilise MetaTrader5 package
+    ↓
+Se connecte à MT5 sur votre PC
+    ↓
+MT5 récupère les données depuis Exness
+    ↓
+Python renvoie les données à Laravel
+    ↓
+Laravel affiche dans votre interface web

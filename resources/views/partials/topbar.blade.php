@@ -51,14 +51,31 @@
                         {{ $account->name }}
                     </a>
                 @endforeach
+                <a href="{{ route('accounts.link') }}"
+                    style="display: block; padding: 10px; color: var(--accent-emerald); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <i class="fa-solid fa-link" style="margin-right: 8px;"></i> Associer Compte Réel (MT5)
+                </a>
                 <a href="{{ route('accounts.create') }}"
                     style="display: block; padding: 10px; color: var(--accent-blue); text-decoration: none; font-size: 12px;">
                     <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Créer un compte manuel
                 </a>
+
             </div>
         </div>
 
+        @if(isset($activeAccount) && $activeAccount->broker_login)
+            <form action="{{ route('accounts.sync', $activeAccount->id) }}" method="POST" style="margin-right: 15px;">
+                @csrf
+                <button type="submit" class="action-btn" title="Synchroniser avec MT5"
+                    style="color: var(--accent-emerald); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span style="font-size: 11px; margin-left: 5px; font-weight: 600;">SYNC</span>
+                </button>
+            </form>
+        @endif
+
         <button class="action-btn"><i class="fa-regular fa-bell"></i></button>
+
 
         <div class="user-profile-pill">
             <div class="user-avatar"></div>

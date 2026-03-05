@@ -29,13 +29,26 @@ Route::get('/accounts/select/{id}', [AccountController::class, 'select'])
     ->middleware('auth')
     ->name('accounts.select');
 
-Route::get('/accounts/create', function () {
-    return view('accounts.create');
-})->middleware('auth')->name('accounts.create');
+Route::get('/accounts/create', [AccountController::class, 'create'])
+    ->middleware('auth')
+    ->name('accounts.create');
 
 Route::post('/accounts', [AccountController::class, 'store'])
     ->middleware('auth')
     ->name('accounts.store');
+
+Route::get('/accounts/link', [AccountController::class, 'link'])
+    ->middleware('auth')
+    ->name('accounts.link');
+
+Route::post('/accounts/link', [AccountController::class, 'linkStore'])
+    ->middleware('auth')
+    ->name('accounts.link.store');
+
+Route::post('/accounts/sync/{id}', [AccountController::class, 'sync'])
+    ->middleware('auth')
+    ->name('accounts.sync');
+
 
 Route::get('/strategies', function () {
     return view('strategies');
