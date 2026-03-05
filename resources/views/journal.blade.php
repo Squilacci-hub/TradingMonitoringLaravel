@@ -27,59 +27,32 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Row 1 -->
+                @forelse($trades as $trade)
                 <tr>
-                    <td class="font-mono" style="color: var(--text-secondary);">#1024</td>
-                    <td class="font-mono">2023-10-24 14:30</td>
-                    <td class="font-mono">2023-10-24 16:45</td>
-                    <td style="font-weight: 500;">EUR/USD</td>
-                    <td class="text-emerald" style="font-weight: 600;">LONG</td>
-                    <td><span style="font-size: 11px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 2px;">Trend Following</span></td>
-                    <td class="font-mono">1.05420</td>
-                    <td class="font-mono">1.05850</td>
-                    <td class="font-mono">1.00</td>
-                    <td class="font-mono text-emerald" style="text-align: right;">+$430.00</td>
+                    <td class="font-mono" style="color: var(--text-secondary);">#{{ $trade->id }}</td>
+                    <td class="font-mono">{{ $trade->open_time->format('Y-m-d H:i') }}</td>
+                    <td class="font-mono">{{ $trade->close_time ? $trade->close_time->format('Y-m-d H:i') : '-' }}</td>
+                    <td style="font-weight: 500;">{{ $trade->symbol }}</td>
+                    <td class="{{ $trade->type === 'BUY' ? 'text-emerald' : 'text-crimson' }}" style="font-weight: 600;">{{ $trade->type }}</td>
+                    <td><span style="font-size: 11px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 2px;">Standard</span></td>
+                    <td class="font-mono">{{ number_format($trade->open_price, 5) }}</td>
+                    <td class="font-mono">{{ $trade->close_price ? number_format($trade->close_price, 5) : '-' }}</td>
+                    <td class="font-mono">{{ number_format($trade->volume, 2) }}</td>
+                    <td class="font-mono {{ $trade->profit >= 0 ? 'text-emerald' : 'text-crimson' }}" style="text-align: right;">
+                        {{ $trade->profit ? (($trade->profit >= 0 ? '+' : '') . '$' . number_format($trade->profit, 2)) : '-' }}
+                    </td>
                 </tr>
-                <!-- Row 2 -->
+                @empty
                 <tr>
-                    <td class="font-mono" style="color: var(--text-secondary);">#1023</td>
-                    <td class="font-mono">2023-10-23 09:15</td>
-                    <td class="font-mono">2023-10-23 10:00</td>
-                    <td style="font-weight: 500;">GBP/JPY</td>
-                    <td class="text-crimson" style="font-weight: 600;">SHORT</td>
-                    <td><span style="font-size: 11px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 2px;">Breakout</span></td>
-                    <td class="font-mono">182.500</td>
-                    <td class="font-mono">182.800</td>
-                    <td class="font-mono">0.50</td>
-                    <td class="font-mono text-crimson" style="text-align: right;">-$150.00</td>
+                    <td colspan="10" style="text-align: center; color: var(--text-secondary);">Aucun trade trouvé.</td>
                 </tr>
-                <!-- Row 3 -->
-                <tr>
-                    <td class="font-mono" style="color: var(--text-secondary);">#1022</td>
-                    <td class="font-mono">2023-10-22 12:00</td>
-                    <td class="font-mono">2023-10-22 18:30</td>
-                    <td style="font-weight: 500;">BTC/USD</td>
-                    <td class="text-emerald" style="font-weight: 600;">LONG</td>
-                    <td><span style="font-size: 11px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 2px;">Swing</span></td>
-                    <td class="font-mono">34,100</td>
-                    <td class="font-mono">35,200</td>
-                    <td class="font-mono">0.10</td>
-                    <td class="font-mono text-emerald" style="text-align: right;">+$110.00</td>
-                </tr>
-                 <!-- Row 4 -->
-                <tr>
-                    <td class="font-mono" style="color: var(--text-secondary);">#1021</td>
-                    <td class="font-mono">2023-10-21 08:20</td>
-                    <td class="font-mono">2023-10-21 08:45</td>
-                    <td style="font-weight: 500;">XAU/USD</td>
-                    <td class="text-emerald" style="font-weight: 600;">LONG</td>
-                    <td><span style="font-size: 11px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 2px;">Scalp</span></td>
-                    <td class="font-mono">1985.50</td>
-                    <td class="font-mono">1988.00</td>
-                    <td class="font-mono">2.00</td>
-                    <td class="font-mono text-emerald" style="text-align: right;">+$500.00</td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
+        
+        <!-- Pagination Links -->
+        <div style="margin-top: 20px;">
+            {{ $trades->links() }}
+        </div>
     </div>
 @endsection
