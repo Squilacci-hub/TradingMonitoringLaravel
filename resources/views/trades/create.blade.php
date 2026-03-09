@@ -3,10 +3,38 @@
 @section('title', 'Nouveau Trade')
 
 @section('content')
+    <!-- Messages flash -->
+    @if(session('success'))
+        <div style="max-width: 1100px; margin: 0 auto 20px auto;">
+            <div style="background: rgba(0, 189, 157, 0.1); border: 1px solid var(--accent-emerald); color: var(--accent-emerald); padding: 12px 15px; border-radius: 4px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-check-circle"></i>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="max-width: 1100px; margin: 0 auto 20px auto;">
+            <div style="background: rgba(242, 54, 69, 0.1); border: 1px solid var(--accent-crimson); color: var(--accent-crimson); padding: 12px 15px; border-radius: 4px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-exclamation-triangle"></i>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
     <div style="max-width: 1100px; margin: 0 auto;">
         <div class="panel">
-            <div class="panel-header" style="padding: 10px 15px;">
+            <div class="panel-header" style="padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;">
                 <span>Enregistrer un nouveau trade manuel</span>
+                <form action="{{ route('trades.import') }}" method="POST" enctype="multipart/form-data" style="display: inline;">
+                    @csrf
+                    <input type="file" name="excel_file" id="excel_file" accept=".csv,.xlsx,.xls" style="display: none;" onchange="this.form.submit()">
+                    <button type="button" onclick="document.getElementById('excel_file').click()" 
+                            style="background: var(--accent-emerald); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Importer Excel
+                    </button>
+                </form>
             </div>
             <div class="panel-body" style="padding: 15px;">
                 <form action="{{ url('/trades') }}" method="POST"

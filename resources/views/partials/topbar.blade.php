@@ -74,6 +74,10 @@
             </form>
         @endif
 
+        <button class="action-btn" id="theme-toggle" title="Basculer le thème">
+            <i class="fas fa-sun"></i>
+        </button>
+
         <button class="action-btn"><i class="fa-regular fa-bell"></i></button>
 
 

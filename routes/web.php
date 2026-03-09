@@ -24,6 +24,10 @@ Route::post('/trades', [TradeController::class, 'store'])
     ->middleware('auth')
     ->name('trades.store');
 
+Route::post('/trades/import', [TradeController::class, 'import'])
+    ->middleware('auth')
+    ->name('trades.import');
+
 use App\Http\Controllers\AccountController;
 Route::get('/accounts/select/{id}', [AccountController::class, 'select'])
     ->middleware('auth')

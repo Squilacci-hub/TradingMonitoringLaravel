@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap');
 
+/* Dark Theme (Default) */
 :root {
     --bg-app: #0b0e14;
     --bg-panel: #151924;
@@ -22,4 +23,29 @@
     --font-mono: 'Roboto Mono', monospace;
 
     --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    --bg-app: #ffffff;
+    --bg-panel: #f8fafc;
+    --bg-panel-hover: #f1f5f9;
+    --sidebar-bg: rgba(248, 250, 252, 0.95);
+
+    --border-color: #e2e8f0;
+    --border-highlight: #cbd5e1;
+
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-accent: #0f172a;
+
+    --accent-emerald: #10b981;
+    --accent-crimson: #ef4444;
+    --accent-blue: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+
+    --glass-border: 1px solid rgba(0, 0, 0, 0.1);
 }
